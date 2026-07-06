@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Display Pelanggan — KasirKu</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+
+:root{
+  --ink:#152420;
+  --forest:#0A5C14;
+  --forest-2:#0F7A1D;
+  --forest-deep:#062F09;
+  --gold:#DCB25C;
+  --gold-2:#EFCB7A;
+  --paper:#FBF7EE;
+  --paper-line:#E2D9C2;
+  --sage:#9BC2AC;
+  --muted:#7C8781;
+}
+*{box-sizing:border-box;}
+.hidden{display:none !important;}
+html,body{margin:0;padding:0;height:100%;}
+body{
+  font-family:'Inter',sans-serif;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(255,255,255,0.05), transparent 45%),
+    linear-gradient(150deg, var(--forest-deep) 0%, var(--forest) 55%, #0C3D11 100%);
+  color:var(--paper);
+  height:100vh;
+  height:100dvh;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+h1,h2,h3{font-family:'Fraunces',serif;margin:0;}
+.mono{font-family:'Space Mono',monospace;}
+
+/* ===== Header ===== */
+.dh-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:clamp(12px,2.5vh,22px) 40px clamp(8px,1.6vh,16px);flex:none;
+}
+.dh-brand{display:flex;align-items:center;gap:14px;}
+.dh-logo{
+  width:56px;height:56px;border-radius:14px;background:linear-gradient(155deg,var(--gold-2),var(--gold));
+  display:flex;align-items:center;justify-content:center;color:var(--forest-deep);
+  font-family:'Fraunces',serif;font-weight:800;font-size:26px;overflow:hidden;
+  box-shadow:0 6px 16px rgba(0,0,0,0.3), inset 0 0 0 2px rgba(255,255,255,0.25);
+  flex:none;
+}
+.dh-logo img{width:100%;height:100%;object-fit:cover;}
+.dh-brand h1{font-size:26px;color:#FBF7EC;letter-spacing:0.2px;}
+.dh-brand .tagline{font-size:12.5px;color:var(--sage);margin-top:2px;letter-spacing:0.3px;}
+.dh-clock{text-align:right;flex:none;}
+.dh-clock .time{font-family:'Space Mono',monospace;font-size:30px;font-weight:700;color:var(--gold-2);line-height:1;}
+.dh-clock .date{font-size:12px;color:var(--sage);margin-top:4px;}
+
+/* ===== Body layout ===== */
+.dh-body{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:1.35fr 1fr;gap:0;padding:0 40px;}
+@media(max-width:860px){.dh-body{grid-template-columns:1fr;}}
+
+/* ===== Items list ===== */
+.dh-items-panel{display:flex;flex-direction:column;min-height:0;padding:8px 24px 8px 0;}
+.dh-items-head{
+  display:flex;justify-content:space-between;align-items:baseline;
+  border-bottom:1px solid rgba(255,255,255,0.15);padding-bottom:10px;margin-bottom:6px;
+}
+.dh-items-head h2{font-size:17px;color:var(--gold-2);letter-spacing:0.5px;text-transform:uppercase;font-weight:600;font-family:'Inter',sans-serif;}
+.dh-items-head .count{font-size:13px;color:var(--sage);font-family:'Space Mono',monospace;}
+.dh-items-list{flex:1;overflow-y:auto;padding-right:4px;}
+.dh-items-list::-webkit-scrollbar{width:5px;}
+.dh-items-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.2);border-radius:3px;}
+.dh-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:13px 2px;border-bottom:1px dashed rgba(255,255,255,0.12);
+  animation:rowIn .28s ease;
+}
+@keyframes rowIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.dh-row .rname{font-size:16.5px;font-weight:600;color:#FBF7EC;}
+.dh-row .rqty{font-size:12.5px;color:var(--sage);margin-top:2px;font-family:'Space Mono',monospace;}
+.dh-row .rsub{font-family:'Space Mono',monospace;font-size:17px;font-weight:700;color:var(--gold-2);}
+.dh-empty{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  color:var(--sage);text-align:center;gap:10px;opacity:0.85;
+}
+.dh-empty .icon{font-size:52px;opacity:0.6;}
+.dh-empty p{font-size:15px;margin:0;max-width:280px;}
+
+/* ===== Totals panel ===== */
+.dh-totals-panel{
+  background:rgba(0,0,0,0.18);
+  border-left:1px solid rgba(255,255,255,0.1);
+  border-radius:18px 18px 0 0;
+  margin-top:10px;
+  padding:clamp(14px,2.4vh,26px) 30px 10px;
+  display:flex;flex-direction:column;
+  min-height:0;
+  overflow-y:auto;
+}
+.dh-trow{display:flex;justify-content:space-between;font-size:15px;padding:7px 0;color:var(--sage);}
+.dh-trow .v{font-family:'Space Mono',monospace;color:#FBF7EC;font-weight:600;}
+.dh-trow.grand{
+  border-top:1px dashed rgba(255,255,255,0.2);margin-top:6px;padding-top:14px;
+  font-size:19px;color:#FBF7EC;font-weight:700;
+}
+.dh-trow.grand .v{font-size:34px;color:var(--gold-2);font-family:'Space Mono',monospace;}
+.dh-pay-block{margin-top:8px;padding-top:10px;border-top:1px dashed rgba(255,255,255,0.15);}
+
+.dh-qris{
+  text-align:center;background:#fff;border-radius:18px;padding:26px 30px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.45);
+  transform:scale(0.7);opacity:0;transition:transform .32s cubic-bezier(.2,1.4,.4,1), opacity .25s ease;
+}
+.dh-qris-overlay{
+  position:fixed;inset:0;z-index:40;
+  background:rgba(4,25,7,0.72);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .25s ease;
+}
+.dh-qris-overlay.show{opacity:1;pointer-events:all;}
+.dh-qris-overlay.show .dh-qris{transform:scale(1);opacity:1;}
+.dh-qris img{width:min(56vh,260px);height:min(56vh,260px);display:block;margin:0 auto;border-radius:8px;}
+.dh-qris .lbl{color:var(--forest-deep);font-weight:700;font-size:14.5px;margin-top:14px;}
+.dh-qris .amt{color:var(--forest);font-family:'Space Mono',monospace;font-size:26px;font-weight:700;margin-top:2px;}
+.dh-qris .eyebrow{color:var(--gold-dark,#AD7F2C);font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:10px;}
+
+/* ===== Promo marquee ===== */
+.dh-promo{
+  flex:none;background:linear-gradient(90deg, var(--gold-dark,#AD7F2C), var(--gold));
+  color:var(--forest-deep);overflow:hidden;position:relative;height:44px;
+  display:flex;align-items:center;font-weight:700;font-size:14.5px;
+}
+.dh-promo .track{display:inline-flex;white-space:nowrap;padding-left:100%;animation:marquee 22s linear infinite;}
+.dh-promo .track span{padding:0 48px;}
+@keyframes marquee{ from{transform:translateX(0);} to{transform:translateX(-100%);} }
+
+/* ===== Thank you overlay ===== */
+.dh-thanks{
+  position:fixed;inset:0;background:linear-gradient(150deg, var(--forest-deep), var(--forest));
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:18px;opacity:0;pointer-events:none;transition:opacity .35s ease;z-index:50;
+}
+.dh-thanks.show{opacity:1;pointer-events:all;}
+.dh-thanks .check{
+  width:110px;height:110px;border-radius:50%;background:radial-gradient(circle,var(--gold-2),var(--gold));
+  display:flex;align-items:center;justify-content:center;font-size:56px;color:var(--forest-deep);
+  box-shadow:0 0 0 10px rgba(220,178,92,0.18);
+  transform:scale(0.6);opacity:0;
+}
+.dh-thanks.show .check{ animation:popIn .5s cubic-bezier(.2,1.4,.4,1) forwards; }
+@keyframes popIn{ to{ transform:scale(1); opacity:1; } }
+.dh-thanks h2{color:#FBF7EC;font-size:38px;text-align:center;}
+.dh-thanks .change-lbl{color:var(--sage);font-size:15px;letter-spacing:0.5px;text-transform:uppercase;}
+.dh-thanks .change-amt{color:var(--gold-2);font-family:'Space Mono',monospace;font-size:44px;font-weight:700;}
+.dh-thanks .confetti{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.confetti-piece{
+  position:absolute;top:-20px;width:9px;height:14px;opacity:0.9;
+  animation:fall linear forwards;
+}
+@keyframes fall{ to{ transform:translateY(110vh) rotate(540deg); opacity:0.2; } }
+</style>
+</head>
+<body>
+
+<div class="dh-header">
+  <div class="dh-brand">
+    <div class="dh-logo" id="dhLogo">K</div>
+    <div>
+      <h1 id="dhShopName">Toko Saya</h1>
+      <div class="tagline">Layar informasi belanja pelanggan · tersinkron otomatis</div>
+    </div>
+  </div>
+  <div class="dh-clock">
+    <div class="time" id="dhTime">00:00:00</div>
+    <div class="date" id="dhDate">—</div>
+  </div>
+</div>
+
+<div class="dh-body">
+  <div class="dh-items-panel">
+    <div class="dh-items-head">
+      <h2>Belanja Anda</h2>
+      <div class="count"><span id="dhItemCount">0</span> item</div>
+    </div>
+    <div class="dh-items-list" id="dhItemsList">
+      <div class="dh-empty">
+        <div class="icon">🛒</div>
+        <p>Silakan tunjukkan barang ke kasir. Daftar belanja Anda akan tampil di sini secara otomatis.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="dh-totals-panel">
+    <div class="dh-trow"><span>Subtotal</span><span class="v" id="dhSubtotal">Rp 0</span></div>
+    <div class="dh-trow"><span>Diskon</span><span class="v" id="dhDiscount">Rp 0</span></div>
+    <div class="dh-trow grand"><span>Total</span><span class="v" id="dhTotal">Rp 0</span></div>
+    <div class="dh-pay-block">
+      <div class="dh-trow"><span>Dibayar</span><span class="v" id="dhPaid">Rp 0</span></div>
+      <div class="dh-trow"><span>Kembalian</span><span class="v" id="dhChange">Rp 0</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="dh-promo" id="dhPromoWrap">
+  <div class="track" id="dhPromoTrack"></div>
+</div>
+
+<div class="dh-qris-overlay" id="dhQrisOverlay">
+  <div class="dh-qris">
+    <div class="eyebrow">Scan untuk bayar</div>
+    <img id="dhQrisImg" src="" alt="QRIS">
+    <div class="lbl">Total pembayaran</div>
+    <div class="amt" id="dhQrisAmount">Rp 0</div>
+  </div>
+</div>
+
+<div class="dh-thanks" id="dhThanks">
+  <div class="confetti" id="dhConfetti"></div>
+  <div class="check">✓</div>
+  <h2>Terima Kasih Telah Berbelanja!</h2>
+  <div>
+    <div class="change-lbl" style="text-align:center;">Kembalian Anda</div>
+    <div class="change-amt" id="dhThanksChange">Rp 0</div>
+  </div>
+</div>
+
+
+<script>
+const STORAGE_PREFIX = "kasir_bejo_";
+const LIVE_KEY = STORAGE_PREFIX + "liveDisplay";
+const LIVE_CHANNEL_NAME = STORAGE_PREFIX + "live_channel";
+
+const fmt = (n) => "Rp " + Math.round(n||0).toLocaleString("id-ID");
+function escapeHtml(s){ const d=document.createElement("div"); d.textContent=s==null?"":s; return d.innerHTML; }
+
+let thanksLockUntil = 0; // selama animasi terima kasih tampil, abaikan update "shopping" yg datang belakangan
+
+function tickClock(){
+  const now = new Date();
+  document.getElementById("dhTime").textContent = now.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById("dhDate").textContent = now.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+}
+tickClock();
+setInterval(tickClock, 1000);
+
+function renderPromo(banners, enabled){
+  const wrap = document.getElementById("dhPromoWrap");
+  const track = document.getElementById("dhPromoTrack");
+  if(!enabled || !banners || banners.length===0){
+    wrap.classList.add("hidden");
+    return;
+  }
+  wrap.classList.remove("hidden");
+  const text = banners.map(b=>`<span>✦ ${escapeHtml(b)}</span>`).join("");
+  track.innerHTML = text + text; // digandakan agar looping mulus
+}
+
+function renderState(data){
+  if(!data) return;
+
+  const now = Date.now();
+  if(now < thanksLockUntil){
+    return; // sedang menampilkan animasi terima kasih, tunda update belanja berikutnya
+  }
+
+  document.getElementById("dhShopName").textContent = data.shopName || "Toko Saya";
+  const logoEl = document.getElementById("dhLogo");
+  if(data.shopLogo){
+    logoEl.innerHTML = `<img src="${data.shopLogo}" alt="">`;
+  } else {
+    logoEl.textContent = (data.shopName||"K").charAt(0).toUpperCase();
+  }
+
+  renderPromo(data.promoBanners, data.promoEnabled);
+
+  if(data.status === "paid"){
+    showThanks(data.change);
+    return;
+  }
+
+  const list = document.getElementById("dhItemsList");
+  const items = data.items || [];
+  if(items.length===0){
+    list.innerHTML = `<div class="dh-empty"><div class="icon">🛒</div><p>Silakan tunjukkan barang ke kasir. Daftar belanja Anda akan tampil di sini secara otomatis.</p></div>`;
+  } else {
+    list.innerHTML = items.map(i=>`
+      <div class="dh-row">
+        <div>
+          <div class="rname">${escapeHtml(i.name)}</div>
+          <div class="rqty">${i.qty} × ${fmt(i.price)}</div>
+        </div>
+        <div class="rsub">${fmt(i.price*i.qty)}</div>
+      </div>
+    `).join("");
+  }
+  document.getElementById("dhItemCount").textContent = data.itemCount||0;
+  document.getElementById("dhSubtotal").textContent = fmt(data.subtotal);
+  document.getElementById("dhDiscount").textContent = fmt(data.discount);
+  document.getElementById("dhTotal").textContent = fmt(data.total);
+  document.getElementById("dhPaid").textContent = fmt(data.paid);
+  document.getElementById("dhChange").textContent = fmt(Math.max(0,data.change||0));
+
+  const qrisOverlay = document.getElementById("dhQrisOverlay");
+  if(data.qrisVisible && data.qrisImg){
+    document.getElementById("dhQrisImg").src = data.qrisImg;
+    document.getElementById("dhQrisAmount").textContent = fmt(data.qrisAmount);
+    qrisOverlay.classList.add("show");
+  } else {
+    qrisOverlay.classList.remove("show");
+  }
+}
+
+function spawnConfetti(){
+  const wrap = document.getElementById("dhConfetti");
+  wrap.innerHTML = "";
+  const colors = ["#DCB25C","#EFCB7A","#9BC2AC","#FBF7EC","#C1473A"];
+  for(let i=0;i<46;i++){
+    const p = document.createElement("div");
+    p.className = "confetti-piece";
+    p.style.left = (Math.random()*100)+"%";
+    p.style.background = colors[i % colors.length];
+    p.style.animationDuration = (2.4 + Math.random()*1.6)+"s";
+    p.style.animationDelay = (Math.random()*0.4)+"s";
+    wrap.appendChild(p);
+  }
+}
+
+function showThanks(change){
+  document.getElementById("dhQrisOverlay").classList.remove("show");
+  document.getElementById("dhThanksChange").textContent = fmt(Math.max(0,change||0));
+  spawnConfetti();
+  const el = document.getElementById("dhThanks");
+  el.classList.add("show");
+  thanksLockUntil = Date.now() + 4200;
+  setTimeout(()=>{
+    el.classList.remove("show");
+  }, 4000);
+}
+
+function loadFromStorage(){
+  try{
+    const raw = localStorage.getItem(LIVE_KEY);
+    if(raw) renderState(JSON.parse(raw));
+  }catch(e){}
+}
+
+// Sinkronisasi lokal real-time: BroadcastChannel (instan) + storage event (cadangan)
+if("BroadcastChannel" in window){
+  try{
+    const ch = new BroadcastChannel(LIVE_CHANNEL_NAME);
+    ch.onmessage = (ev)=>renderState(ev.data);
+  }catch(e){}
+}
+window.addEventListener("storage", (e)=>{
+  if(e.key === LIVE_KEY && e.newValue){
+    try{ renderState(JSON.parse(e.newValue)); }catch(err){}
+  }
+});
+// Polling cadangan tiap 1.5s (untuk browser yang membatasi event storage antar tab)
+setInterval(loadFromStorage, 1500);
+
+loadFromStorage();
+</script>
+</body>
+</html>
